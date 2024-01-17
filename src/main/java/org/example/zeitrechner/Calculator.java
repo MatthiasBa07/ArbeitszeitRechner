@@ -1,5 +1,4 @@
 package org.example.zeitrechner;
-import java.time.LocalTime;
 
 public class Calculator {
     private int hour;
@@ -19,15 +18,11 @@ public class Calculator {
     }
     public int calculateTime(int sekStampOut) {
         int sekStampIn = this.timeToSek();
-        if (sekStampIn < sekStampOut) {
-            int stampDiff = sekStampOut - sekStampIn;
-            return stampDiff;
-        }
-        else {
+        if (sekStampIn > sekStampOut) {
             sekStampOut += 86400;
-            int stampDiff = sekStampOut - sekStampIn;
-            return stampDiff;
         }
+        int stampDiff = sekStampOut - sekStampIn;
+        return stampDiff;
     }
     public void sekToTime(int sekTime) {
         int hoursTime;
@@ -60,7 +55,7 @@ public class Calculator {
         Calculator timeIn = new Calculator();
         timeIn.setHour(15);
         timeIn.setMin(33);
-        timeIn.setSek(35);
+        timeIn.setSek(0);
         timeIn.printTime();
         Calculator timeOut = new Calculator();
         timeOut.setHour(2);
