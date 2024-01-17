@@ -10,20 +10,34 @@ public class Calculator {
         output = "Zeit: " + this.getHour() + ":" + this.getMin() + ":" + this.getSek();
         System.out.println(output);
     }
+    /*
+    Rechnet die Zeit in sekunden zu berechnne um.
+    @autor Simon
+     */
     public int timeToSek() {
         int sekHour = this.getHour() * 3600;
         int sekMin = this.getMin() * 60;
         int sekSek = this.getSek() + sekHour + sekMin;
         return sekSek;
     }
-    public int calculateTime(int sekStampOut) {
-        int sekStampIn = this.timeToSek();
+    /*
+    Rechnet die gearbeitete Zeit aus mittels Subtraction.
+    Bei Zeit über Mitternacht wird der Ausstemelzeit ein Tag zugerechnet
+    um nich ins minus zu kommen.
+    @autor Simon
+     */
+    public int calculateTime(int sekStampIn, int sekStampOut) {
         if (sekStampIn > sekStampOut) {
             sekStampOut += 86400;
         }
         int stampDiff = sekStampOut - sekStampIn;
         return stampDiff;
     }
+
+    /*
+    Rechnet anzahl Sekunden in leserliche Zeit um.
+    @autor Simon
+     */
     public void sekToTime(int sekTime) {
         int hoursTime;
         int minTime;
@@ -50,18 +64,5 @@ public class Calculator {
     }
     public void setSek(int sek) {
         this.sek = sek;
-    }
-    public static void main(String[] args) {
-        Calculator timeIn = new Calculator();
-        timeIn.setHour(15);
-        timeIn.setMin(33);
-        timeIn.setSek(0);
-        timeIn.printTime();
-        Calculator timeOut = new Calculator();
-        timeOut.setHour(2);
-        timeOut.setMin(25);
-        timeOut.setSek(0);
-        timeOut.printTime();
-        timeIn.sekToTime(timeIn.calculateTime(timeOut.timeToSek()));
     }
 }
