@@ -11,9 +11,9 @@ public interface PersonDao {
 
     public List<Person> getAllPerson() throws SQLException;
 
-    public Person getPersonById();
+    public Person getPersonById(int id) throws SQLException;
 
-    public Person getPersonByName(String vorname, String Nachname);
+    public Person getPersonByName(String vorname, String Nachname) throws SQLException;
 
-    public void removePersonWithId(int id);
+    public void removePersonWithId(int id) throws SQLException;
 }

@@ -35,18 +35,30 @@ public class PersonJDBCDao implements PersonDao {
         return personList;
     }
 
-    @Override
-    public Person getPersonById() {
-        return null;
+    public Person getPersonById(int id) throws SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE ID_Person = " + id + " LIMIT 1;";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        resultSet.next();
+        return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
     }
 
     @Override
-    public Person getPersonByName(String vorname, String Nachname) {
-        return null;
+    public Person getPersonByName(String vorname, String nachname) throws SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE Vorname = '" + vorname + "' AND Nachname = '" + nachname + "' LIMIT 1;";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        resultSet.next();
+        return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
     }
 
     @Override
-    public void removePersonWithId(int id) {
-
+    public void removePersonWithId(int id) throws SQLException {
+        String sql = "DELETE FROM `PERSON` WHERE ID_Person = " + id + " ;";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(sql);
+        statement.close();
     }
 }
