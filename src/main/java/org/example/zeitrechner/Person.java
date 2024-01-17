@@ -23,7 +23,7 @@ public class Person {
         return nachname;
     }
 
-    public String getFUllName() {
+    public String getFullName() {
         return vorname + " " + nachname;
     }
 }
