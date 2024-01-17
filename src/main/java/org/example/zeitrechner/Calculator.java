@@ -19,8 +19,15 @@ public class Calculator {
     }
     public int calculateTime(int sekStampOut) {
         int sekStampIn = this.timeToSek();
-        int stampDiff = sekStampOut - sekStampIn;
-        return stampDiff;
+        if (sekStampIn < sekStampOut) {
+            int stampDiff = sekStampOut - sekStampIn;
+            return stampDiff;
+        }
+        else {
+            sekStampOut += 86400;
+            int stampDiff = sekStampOut - sekStampIn;
+            return stampDiff;
+        }
     }
     public void sekToTime(int sekTime) {
         int hoursTime;
