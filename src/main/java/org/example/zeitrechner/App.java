@@ -1,39 +1,22 @@
 package org.example.zeitrechner;
 
 import java.sql.SQLException;
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 public class App {
 
     public static void main(String[] args) {
         PersonJDBCDao personJDBCDao = new PersonJDBCDao();
-        /* Select all
-        List<Person> personen = null;
+        TimestampJDBCDao timestampJDBCDao = new TimestampJDBCDao();
+
         try {
-            personen = personJDBCDao.getAllPerson();
-        } catch (
-                SQLException ignored) {
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        for (Person person : personen) {
-            System.out.println(person.getFUllName());
-        } */
-        /* insert
-        try {
-            personJDBCDao.insertPerson("Hans","Herman");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
-        /* get by name
-        try {
-            System.out.println(personJDBCDao.getPersonByName("Matthias","Baumgartner").getFullName());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
-        /* rm
-        try {
-            personJDBCDao.removePersonWithId(5);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }*/
+
+
     }
 }

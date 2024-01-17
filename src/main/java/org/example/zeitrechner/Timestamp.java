@@ -8,10 +8,12 @@ public class Timestamp {
     private int sek;
     private Person person;
     private LocalDate date;
-    public Timestamp(Person person, LocalDate date , int sek){
+    private int id;
+    public Timestamp(int id,Person person, LocalDate date , int sek){
         this.person=person;
         this.sek=sek;
         this.date=date;
+        this.id=id;
     }
 
     public void makeTimestamp() {
@@ -44,9 +46,7 @@ public class Timestamp {
     public void setSek(int sek) {
         this.sek = sek;
     }
-    public static void main(String[] args) {
-        Timestamp time = new Timestamp();
-        time.makeTimestamp();
-        time.printTime();
-    }
+    public Person getPerson(){return person;}
+    public LocalDate getDate(){return date;}
 }
+
