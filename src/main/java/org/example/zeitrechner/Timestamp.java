@@ -7,7 +7,7 @@ public class Timestamp {
     private int sek;
     private Person person;
     private LocalDate date;
-    public Timestamp(Person person, LocalDate date, int sek){
+    public Timestamp(int id,Person person, LocalDate date, int sek){
         this.person=person;
         this.sek=sek;
         this.date=date;
