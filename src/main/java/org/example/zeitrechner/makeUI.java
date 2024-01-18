@@ -4,27 +4,29 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import static javafx.application.Application.launch;
 
 public class makeUI extends Application {
     public void start(Stage primaryStage) {
-        try {
-           BorderPane root = new BorderPane();
-           Scene scene1 = new Scene(root, 400, 400);
-           Label text = new Label("du");
-           root.setCenter(text);
-           primaryStage.show();
+        BorderPane root = new BorderPane();
 
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+        Label label1 = new Label("Ihr Arbeitsrechner");
+        Button timestamp = new Button("Stempeln");
+        timestamp.setOnAction(e -> label1.setText("+ 200'000 V-Bucks"));
+
+        Scene scene = new Scene(root, 600, 600);
+        scene.getStylesheets().add(getClass().getResource("styleUI.css").toExternalForm());
+
+        root.setTop(label1);
+        root.setCenter(timestamp);
+
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
+        primaryStage.setTitle("Arbeitszeitrechner");
+        primaryStage.show();
     }
-
     public static void main(String[] args) {
-        launch();
+        launch(args);
     }
 }
 
