@@ -66,14 +66,13 @@ public class TimestampJDBCDao implements TimestampDao{
      * @throws SQLException Wenn etwas bei der Datenbank schiefläuft
      */
     @Override
-    public List<Timestamp> getTimestampByPerson(Person person) throws SQLException {
+    public ArrayList<Timestamp> getTimestampByPerson(Person person) throws SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         PersonJDBCDao personJDBCDao = new PersonJDBCDao();
         String sql = "SELECT ID_Timestamp,Person_ID,Date,Sekunden FROM TIMESTAMP WHERE Person_ID = " + person.getId() + ";";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
-        List<Timestamp> timestampList = new ArrayList<>();
+        ArrayList<Timestamp> timestampList = new ArrayList<>();
         while (resultSet.next()){
             timestampList.add(new Timestamp(resultSet.getInt("ID_Timestamp"),personJDBCDao.getPersonById(resultSet.getInt("Person_ID")), resultSet.getDate("Date").toLocalDate(), resultSet.getInt("Sekunden")));
         }
