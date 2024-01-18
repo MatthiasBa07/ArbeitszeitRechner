@@ -3,6 +3,10 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+/**
+ * ...
+ * @author Simon Gauss
+ */
 public class Timestamp {
     private int sek;
     private Person person;

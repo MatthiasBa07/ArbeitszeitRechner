@@ -1,5 +1,9 @@
 package org.example.zeitrechner;
 
+/**
+ * Diese Klasse stellt eine Person dar, deren Zeit gemanagt wird.
+ * @author Matthias Baumgartner
+ */
 public class Person {
     private int id;
     private String vorname;
