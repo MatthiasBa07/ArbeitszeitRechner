@@ -4,6 +4,12 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+/**
+ * Diese Klasse ist dazu da, eine Verbindung mit der Datenbank aufzubauen.
+ * @author Matthias Baumgartner
+ *
+ */
+
 public class ConnectionFactory {
 
     private static ConnectionFactory instanz = new ConnectionFactory("plantdex.ch","ZeitrechnerUser","6O2sTjgCWKclKkYs");
@@ -12,13 +18,15 @@ public class ConnectionFactory {
     private String user;
     private String passwort;
 
-
     public ConnectionFactory(String url, String user, String passwort) {
         this.url = url;
         this.user = user;
         this.passwort = passwort;
     }
 
+    /**
+     * Diese Methode gibt die Verbindung zur Datenbank aus.
+     */
     public Connection getConnection() {
         String jdcbUrl = "jdbc:mysql://" + url + ":3306/ZEITRECHNER";
         Connection conn = null;
@@ -34,6 +42,9 @@ public class ConnectionFactory {
         return conn;
     }
 
+    /**
+     * Diese Methode gibt immer die gleiche Instanz der ConnectionFactory aus.
+     */
     public static ConnectionFactory getInstance() {
         return instanz;
     }

@@ -5,6 +5,10 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.List;
 
+/**
+ * Das Interface, um mit der Tabelle "Person" zu interargieren
+ * @author Matthias Baumgartner
+ */
 public interface PersonDao {
 
     public void insertPerson(String vorname, String nachname) throws SQLException;
