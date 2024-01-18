@@ -9,7 +9,7 @@ public class main {
         PersonJDBCDao personJDBCDao = new PersonJDBCDao();
         Timestamp time1 = null;
         try {
-            time1 = new Timestamp(personJDBCDao.getPersonByName("Simon","Gaus"), LocalDate.of(2024, 1, 17),1000);
+            time1 = new Timestamp(5,personJDBCDao.getPersonByName("Simon","Gaus"), LocalDate.of(2024, 1, 17),1000);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -21,7 +21,7 @@ public class main {
         }
         Timestamp time2 = null;
         try {
-            time2 = new Timestamp(personJDBCDao.getPersonByName("Simon","Gaus"), LocalDate.of(2024, 1, 17),1000);
+            time2 = new Timestamp(5,personJDBCDao.getPersonByName("Simon","Gaus"), LocalDate.of(2024, 1, 17),1000);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
