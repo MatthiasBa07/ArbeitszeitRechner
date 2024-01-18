@@ -1,0 +1,14 @@
+.lblTitle {
+    -fx-font: 30px Verdana;
+}
+
+.lblStamp {
+    -fx-font: 15px Verdana;
+    -fx-padding: 50px;
+    -fx-border-insets: 50px;
+    -fx-background-insets: 50px;
+}
+
+.timestamp {
+    -fx-font: 15px Verdana;
+}

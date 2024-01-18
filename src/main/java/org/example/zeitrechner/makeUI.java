@@ -4,21 +4,29 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class makeUI extends Application {
     public void start(Stage primaryStage) {
-        BorderPane root = new BorderPane();
+        Pane root = new Pane();
 
-        Label label1 = new Label("Ihr Arbeitsrechner");
-        Button timestamp = new Button("Stempeln");
-        timestamp.setOnAction(e -> label1.setText("+ 200'000 V-Bucks"));
+        Label lblTitle = new Label("Ihr Arbeitsrechner");
+        lblTitle.getStyleClass().add("lblTitle");
+
+        Label lblStamp = new Label("Bitte Stempeln");
+        lblStamp.getStyleClass().add("lblStamp");
+
+        Label lblEmpty = new Label(" ");
+
+        Button btnTimestamp = new Button("Stempeln");
+        btnTimestamp.getStyleClass().add("timestamp");
+        btnTimestamp.setOnAction(e -> lblStamp.setText("Gestempelt"));
 
         Scene scene = new Scene(root, 600, 600);
         scene.getStylesheets().add(getClass().getResource("styleUI.css").toExternalForm());
 
-        root.setTop(label1);
-        root.setCenter(timestamp);
+        root.getChildren();
 
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
