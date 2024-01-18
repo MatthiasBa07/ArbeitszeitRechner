@@ -33,4 +33,12 @@ public class Timestamp {
     public void setSek(int sek) {
         this.sek = sek;
     }
+
+    public Person getPerson() {
+        return person;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
 }

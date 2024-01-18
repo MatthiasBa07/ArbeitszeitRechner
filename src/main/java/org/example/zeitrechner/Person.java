@@ -15,6 +15,11 @@ public class Person {
         this.nachname = nachname;
     }
 
+    public boolean equals(Person person) {
+        if (this.id == person.id) return true;
+        else return false;
+    }
+
     public int getId() {
         return id;
     }
