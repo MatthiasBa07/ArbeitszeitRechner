@@ -1,0 +1,42 @@
+
+.root {
+    -fx-background-color: white;
+}
+
+.lblTitle {
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+    -fx-font: 25px Verdana;
+}
+
+.lblStamp {
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+    -fx-font: 20px Verdana;
+}
+
+.timestamp {
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+    -fx-font: 20px Verdana;
+    -fx-background-color: white;
+}
+
+.btnNewPerson {
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+    -fx-font: 20px Verdana;
+    -fx-background-color: transparent;
+}
+
+.btnListPerson {
+    -fx-padding: 20px;
+    -fx-border-insets: 20px;
+    -fx-background-insets: 20px;
+    -fx-font: 20px Verdana;
+    -fx-background-color: transparent;
+}
