@@ -1,6 +1,6 @@
 
 .root {
-    -fx-background-color: white;
+    -fx-background-color: #edeade;
 }
 
 .lblTitle {
@@ -15,6 +15,13 @@
     -fx-border-insets: 20px;
     -fx-background-insets: 20px;
     -fx-font: 20px Verdana;
+}
+
+.lblUserCreateConfirm {
+    -fx-padding: 10px;
+    -fx-border-insets: 10px;
+    -fx-background-insets: 10px;
+    -fx-text-fill: green;
 }
 
 .timestamp {
@@ -39,4 +46,16 @@
     -fx-background-insets: 20px;
     -fx-font: 20px Verdana;
     -fx-background-color: transparent;
+}
+
+.btnCreateNewUser {
+    -fx-padding: 10px;
+    -fx-border-insets: 10px;
+    -fx-background-insets: 10px;
+}
+
+.textField {
+    -fx-padding: 10px;
+    -fx-border-insets: 10px;
+    -fx-background-insets: 10px;
 }
