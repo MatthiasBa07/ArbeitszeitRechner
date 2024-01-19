@@ -1,50 +1,91 @@
 package org.example.zeitrechner;
+
 import javafx.application.Application;
+import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class makeUI extends Application {
+    Label label = new Label("Label");
+
+    @Override
     public void start(Stage primaryStage) {
-        GridPane root = new GridPane();
-        root.getStyleClass().add("root");
+        try {
+            BorderPane root = new BorderPane();
+            ScrollPane leftScroll = new ScrollPane();
+            VBox leftVbox = new VBox();
+            BorderPane leftTopPane = new BorderPane();
 
-        Label lblTitle = new Label("Ihr Arbeitsrechner");
-        lblTitle.getStyleClass().add("lblTitle");
-        root.add(lblTitle, 2, 0);
+            leftTopPane.getStyleClass().add("leftTopPane");
+            leftScroll.getStyleClass().add("leftScroll");
+            leftScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 
-        Label lblStamp = new Label("Bitte Stempeln");
-        lblStamp.getStyleClass().add("lblStamp");
-        root.add(lblStamp, 2, 1);
+            Button neuPersonButton = new Button("Neue Person");
+            neuPersonButton.getStyleClass().add("personButton");
+            leftTopPane.setCenter(neuPersonButton);
 
-        Button btnTimestamp = new Button("Stempeln");
-        btnTimestamp.getStyleClass().add("timestamp");
-        btnTimestamp.setOnAction(e -> lblStamp.setText("Gestempelt"));
-        root.add(btnTimestamp, 2, 2);
+            ArrayList<Person> personen = PersonJDBCDao.getInstance().getAllPerson();
+            ArrayList<BorderPane> paneList = new ArrayList<>();
+            for (Person person : personen) {
+                Button personButton = new Button(person.getFullName());
+                personButton.getStyleClass().add("personButton");
+                leftVbox.getChildren().add(personButton);
+                personButton.setOnAction(e -> {
+                    root.setTop(paneList.get(personen.lastIndexOf(person)));
+                });
 
-        Button btnNewPerson = new Button("Neue Person");
-        btnNewPerson.getStyleClass().add("btnNewPerson");
-        root.add(btnNewPerson,0,0);
+                BorderPane borderPane = new BorderPane();
+                Label nameLabel = new Label(person.getFullName());
+                nameLabel.getStyleClass().add("nameLabel");
+                borderPane.setTop(nameLabel);
+                paneList.add(borderPane);
+            }
 
-        for (int i = 0; i < 5; i++) {
-            Button btnListPerson = new Button("Person");
-            btnListPerson.getStyleClass().add("btnListPerson");
-            root.add(btnListPerson,0,i + 1);
+
+
+
+
+
+            leftScroll.setContent(leftVbox);
+
+            VBox leftPane = new VBox();
+            leftPane.getStyleClass().add("leftPane");
+            leftPane.getChildren().addAll(leftTopPane, leftScroll);
+            root.setLeft(leftPane);
+
+
+            Scene scene = new Scene(root, 600, 600);
+            scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("styleUI.css")).toExternalForm());
+
+            primaryStage.setScene(scene);
+            primaryStage.setTitle("Zeitrechner");
+            primaryStage.getIcons().add(new Image(Objects.requireNonNull(makeUI.class.getResourceAsStream("uhr.jpg"))));
+            primaryStage.show();
+            primaryStage.setResizable(false);
+            primaryStage.setOnCloseRequest(e -> System.exit(0));
+
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        Scene scene = new Scene(root, 600, 600);
-        scene.getStylesheets().add(getClass().getResource("styleUI.css").toExternalForm());
-
-        primaryStage.setScene(scene);
-        primaryStage.setResizable(false);
-        primaryStage.setTitle("Arbeitszeitrechner");
-        primaryStage.show();
     }
+
+
     public static void main(String[] args) {
-        launch(args);
+        launch();
     }
 }
 
