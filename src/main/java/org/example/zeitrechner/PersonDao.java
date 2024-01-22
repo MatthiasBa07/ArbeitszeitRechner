@@ -3,6 +3,7 @@ package org.example.zeitrechner;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +15,8 @@ public interface PersonDao {
     public void insertPerson(String vorname, String nachname) throws SQLException;
 
     public List<Person> getAllPerson() throws SQLException;
+
+    ArrayList<Person> getAllPerson(String orderBy) throws SQLException;
 
     public Person getPersonById(int id) throws SQLException;
 

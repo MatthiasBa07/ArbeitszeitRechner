@@ -3,40 +3,58 @@
     -fx-background-color: white;
 }
 
-.lblTitle {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 25px Verdana;
+.leftScroll {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+
+    -fx-pref-height: 550px;
+    -fx-min-height: 550px;
+    -fx-max-height: 550px;
 }
 
-.lblStamp {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
+.personButton {
+    -fx-pref-width: 135px;
+    -fx-min-width: 135px;
+    -fx-max-width: 135px;
+
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
 }
 
-.timestamp {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: white;
+.leftPane {
+    -fx-pref-height: 600px;
+    -fx-min-height: 600px;
+    -fx-max-height: 600px;
 }
 
-.btnNewPerson {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: transparent;
+.leftTopPane {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+    -fx-background-color: #ffffff;
 }
 
-.btnListPerson {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: transparent;
+.nameLabel {
+    -fx-font-size: 30px;
+    -fx-text-align: center;
+}
+
+.homePaneWelcome {
+    -fx-font-size: 30px;
+}
+
+.stampButton {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
+}
+
+.stampLabel {
+    -fx-padding: 0 0 0 25px
 }

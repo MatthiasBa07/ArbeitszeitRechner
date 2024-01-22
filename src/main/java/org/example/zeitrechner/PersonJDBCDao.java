@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Die Klasse, um mit der Tabelle "Person" zu interargieren
@@ -40,6 +39,21 @@ public class PersonJDBCDao implements PersonDao {
     public ArrayList<Person> getAllPerson() throws SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON;";
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery(sql);
+        ArrayList<Person> personList = new ArrayList<>();
+
+        while (resultSet.next()) {
+            personList.add(new Person(resultSet.getInt("ID_Person"), resultSet.getString("Vorname"), resultSet.getString("Nachname")));
+        }
+        if (!personList.isEmpty()) return personList;
+        else return null;
+    }
+
+    @Override
+    public ArrayList<Person> getAllPerson(String orderBy) throws SQLException {
+        Connection connection = ConnectionFactory.getInstance().getConnection();
+        String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON ORDER BY " + orderBy + ";";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
         ArrayList<Person> personList = new ArrayList<>();
