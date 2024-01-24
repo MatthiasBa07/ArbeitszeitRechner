@@ -58,3 +58,9 @@
 .stampLabel {
     -fx-padding: 0 0 0 25px
 }
+
+.stampBox {
+    -fx-pref-width: 500px;
+    -fx-min-width: 500px;
+    -fx-max-width: 500px;
+}

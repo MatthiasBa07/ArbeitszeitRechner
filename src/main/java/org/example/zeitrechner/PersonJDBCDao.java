@@ -37,7 +37,6 @@ public class PersonJDBCDao implements PersonDao {
      */
     @Override
     public ArrayList<Person> getAllPerson() throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -52,7 +51,6 @@ public class PersonJDBCDao implements PersonDao {
 
     @Override
     public ArrayList<Person> getAllPerson(String orderBy) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON ORDER BY " + orderBy + ";";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -72,7 +70,6 @@ public class PersonJDBCDao implements PersonDao {
      * @throws SQLException Wenn etwas bei der Datenbank schiefläuft
      */
     public Person getPersonById(int id) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE ID_Person = " + id + " LIMIT 1;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
@@ -89,7 +86,6 @@ public class PersonJDBCDao implements PersonDao {
      */
     @Override
     public Person getPersonByName(String vorname, String nachname) throws SQLException {
-        Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE Vorname = '" + vorname + "' AND Nachname = '" + nachname + "' LIMIT 1;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);

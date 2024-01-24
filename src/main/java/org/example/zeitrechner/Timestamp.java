@@ -11,10 +11,12 @@ public class Timestamp {
     private int sek;
     private Person person;
     private LocalDate date;
+    private int id;
     public Timestamp(int id,Person person, LocalDate date, int sek){
         this.person=person;
         this.sek=sek;
         this.date=date;
+        this.id = id;
     }
     /*
     Macht einen Zeitstempel der aktuellen Zeit und rechnet sie
@@ -40,5 +42,9 @@ public class Timestamp {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    public int getId() {
+        return id;
     }
 }

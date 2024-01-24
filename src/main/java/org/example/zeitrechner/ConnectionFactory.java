@@ -33,10 +33,6 @@ public class ConnectionFactory {
         try {
             conn = DriverManager.getConnection(jdcbUrl, user, passwort);
         } catch (SQLException e) {
-            System.out.println("An SQL exception occurred:");
-            System.out.println("Error Code: " + e.getErrorCode());
-            System.out.println("SQL State: " + e.getSQLState());
-            System.out.println("Message: " + e.getMessage());
             e.printStackTrace();
         }
         return conn;
