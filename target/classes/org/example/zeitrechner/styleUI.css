@@ -1,6 +1,6 @@
 
 .root {
-    -fx-background-color: #edeade;
+    -fx-background-color: white;
 }
 
 .leftScroll {
@@ -23,57 +23,38 @@
     -fx-max-height: 50px;
 }
 
-<<<<<<< HEAD
-.lblUserCreateConfirm {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
-    -fx-text-fill: green;
-}
-
-.timestamp {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: white;
-=======
 .leftPane {
     -fx-pref-height: 600px;
     -fx-min-height: 600px;
     -fx-max-height: 600px;
->>>>>>> d3787721fe8e1f34c49a0ddd642b97d04a759ee6
 }
 
 .leftTopPane {
     -fx-pref-width: 150px;
     -fx-min-width: 150px;
     -fx-max-width: 150px;
-    -fx-background-color: #e9e9e9;
+    -fx-background-color: #ffffff;
 }
 
-<<<<<<< HEAD
-.btnListPerson {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: transparent;
-}
-
-.btnCreateNewUser {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
-}
-
-.textField {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
-=======
 .nameLabel {
     -fx-font-size: 30px;
     -fx-text-align: center;
->>>>>>> d3787721fe8e1f34c49a0ddd642b97d04a759ee6
+}
+
+.homePaneWelcome {
+    -fx-font-size: 30px;
+}
+
+.stampButton {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
+}
+
+.stampLabel {
+    -fx-padding: 0 0 0 25px
 }
