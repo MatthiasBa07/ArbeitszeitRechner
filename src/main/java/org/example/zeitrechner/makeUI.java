@@ -2,17 +2,18 @@ package org.example.zeitrechner;
 
 import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.converter.DefaultStringConverter;
 
 import java.sql.SQLException;
 import java.text.ParseException;
@@ -22,7 +23,6 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class makeUI extends Application {
-    Label label = new Label("Label");
 
     @Override
     public void start(Stage primaryStage) {
@@ -50,10 +50,87 @@ public class makeUI extends Application {
             root.setCenter(homePane);
 
             Button neuPersonButton = new Button("Neue Person");
-            BorderPane neuPersonPane = new BorderPane();
-            neuPersonPane.setCenter(new Label("Neue Person"));
             neuPersonButton.setOnAction(e -> {
-                root.setCenter(neuPersonPane);
+                Stage neuPersonWindow = new Stage();
+
+                neuPersonWindow.initModality(Modality.APPLICATION_MODAL);
+                neuPersonWindow.setTitle("Person erstellen");
+
+                BorderPane layout = new BorderPane();
+                layout.setPadding(new Insets(25, 25, 0, 25));
+
+                TextFormatter<String> vornameFormatter = new TextFormatter<>(new DefaultStringConverter(), "", change ->
+                        change.getControlNewText().length() <= 15 ? change : null);
+                TextFormatter<String> nachnameFormatter = new TextFormatter<>(new DefaultStringConverter(), "", change ->
+                        change.getControlNewText().length() <= 15 ? change : null);
+
+
+                TextField vornameInput = new TextField();
+                vornameInput.setPromptText("Vorname eingeben");
+                vornameInput.setFocusTraversable(false);
+                vornameInput.setTextFormatter(vornameFormatter);
+
+                Label vornameLabel = new Label("Vorname");
+
+                VBox vornameBox = new VBox(vornameLabel, vornameInput);
+
+                TextField nachnameInput = new TextField();
+                nachnameInput.setPromptText("Nachname eingeben");
+                nachnameInput.setFocusTraversable(false);
+                nachnameInput.setTextFormatter(nachnameFormatter);
+
+                Label nachnameLabel = new Label("Nachname");
+
+                VBox nachnameBox = new VBox(nachnameLabel, nachnameInput);
+
+                Button confirmButton = new Button("Erstellen");
+                confirmButton.setOnAction(c -> {
+                    try {
+                        String vorname;
+                        if (vornameInput.getLength() > 15) {
+                            vorname = vornameInput.getText(0, 15);
+                        } else {
+                            vorname = vornameInput.getText();
+                        }
+
+                        String nachname;
+                        if (nachnameInput.getLength() > 15) {
+                            nachname = nachnameInput.getText(0, 15);
+                        } else {
+                            nachname = nachnameInput.getText();
+                        }
+
+                        PersonJDBCDao.getInstance().insertPerson(vorname, nachname);
+                        neuPersonWindow.close();
+                    } catch (SQLException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                });
+                Button cancelButton = new Button("Abbrechen");
+                cancelButton.setOnAction(c -> {
+                    neuPersonWindow.close();
+                });
+                HBox buttonBox = new HBox(cancelButton, confirmButton);
+                buttonBox.setPrefHeight(50);
+                buttonBox.setMaxHeight(50);
+                buttonBox.setPrefWidth(250);
+                buttonBox.setMaxWidth(250);
+                buttonBox.setSpacing(100);
+
+                VBox mainBox = new VBox();
+                mainBox.setSpacing(30);
+                mainBox.getStyleClass().add("mainBox");
+                mainBox.getChildren().addAll(vornameBox, nachnameBox);
+
+                layout.setCenter(mainBox);
+                layout.setBottom(buttonBox);
+
+                Scene scene = new Scene(layout, 300, 300);
+                neuPersonWindow.getIcons().add(new Image(Objects.requireNonNull(makeUI.class.getResourceAsStream("uhr.jpg"))));
+                scene.getStylesheets().add(Objects.requireNonNull(getClass().getResource("neuPersonUI.css")).toExternalForm());
+                neuPersonWindow.setScene(scene);
+
+                neuPersonWindow.showAndWait();
             });
             neuPersonButton.getStyleClass().add("personButton");
             leftTopPane.setCenter(neuPersonButton);
@@ -101,8 +178,6 @@ public class makeUI extends Application {
             stampButtonBox.getChildren().add(stampButton);
 
             lastStampBox.getChildren().add(stampLabel);
-
-
             for (Person person : personen) {
 
                 Button personButton;
