@@ -13,6 +13,7 @@ import java.util.List;
 public class PersonJDBCDao implements PersonDao {
 
     final static private Connection connection = ConnectionFactory.getInstance().getConnection();
+    final static private PersonJDBCDao instance = new PersonJDBCDao();
 
     /**
      * Eine Person einfügen
@@ -36,12 +37,12 @@ public class PersonJDBCDao implements PersonDao {
      * @throws SQLException Wenn etwas bei der Datenbank schiefläuft
      */
     @Override
-    public List<Person> getAllPerson() throws SQLException {
+    public ArrayList<Person> getAllPerson() throws SQLException {
         Connection connection = ConnectionFactory.getInstance().getConnection();
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
-        List<Person> personList = new ArrayList<>();
+        ArrayList<Person> personList = new ArrayList<>();
 
         while (resultSet.next()) {
             personList.add(new Person(resultSet.getInt("ID_Person"), resultSet.getString("Vorname"), resultSet.getString("Nachname")));
@@ -93,5 +94,9 @@ public class PersonJDBCDao implements PersonDao {
         Statement statement = connection.createStatement();
         statement.executeUpdate(sql);
         statement.close();
+    }
+
+    public static PersonJDBCDao getInstance() {
+        return instance;
     }
 }

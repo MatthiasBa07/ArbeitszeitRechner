@@ -1,61 +1,42 @@
 
 .root {
-    -fx-background-color: #edeade;
-}
-
-.lblTitle {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 25px Verdana;
-}
-
-.lblStamp {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-}
-
-.lblUserCreateConfirm {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
-    -fx-text-fill: green;
-}
-
-.timestamp {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
     -fx-background-color: white;
 }
 
-.btnNewPerson {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: transparent;
+.leftScroll {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+
+    -fx-pref-height: 550px;
+    -fx-min-height: 550px;
+    -fx-max-height: 550px;
 }
 
-.btnListPerson {
-    -fx-padding: 20px;
-    -fx-border-insets: 20px;
-    -fx-background-insets: 20px;
-    -fx-font: 20px Verdana;
-    -fx-background-color: transparent;
+.personButton {
+    -fx-pref-width: 135px;
+    -fx-min-width: 135px;
+    -fx-max-width: 135px;
+
+    -fx-pref-height: 50px;
+    -fx-min-height: 50px;
+    -fx-max-height: 50px;
 }
 
-.btnCreateNewUser {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
+.leftPane {
+    -fx-pref-height: 600px;
+    -fx-min-height: 600px;
+    -fx-max-height: 600px;
 }
 
-.textField {
-    -fx-padding: 10px;
-    -fx-border-insets: 10px;
-    -fx-background-insets: 10px;
+.leftTopPane {
+    -fx-pref-width: 150px;
+    -fx-min-width: 150px;
+    -fx-max-width: 150px;
+    -fx-background-color: #e9e9e9;
+}
+
+.nameLabel {
+    -fx-font-size: 30px;
+    -fx-text-align: center;
 }
