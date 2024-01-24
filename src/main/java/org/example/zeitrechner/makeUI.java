@@ -1,6 +1,7 @@
 package org.example.zeitrechner;
 
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -8,6 +9,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
@@ -17,10 +19,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Objects;
-import java.util.SimpleTimeZone;
+import java.util.*;
 
 public class makeUI extends Application {
     Label label = new Label("Label");
@@ -62,10 +61,6 @@ public class makeUI extends Application {
             ArrayList<Person> personen = PersonJDBCDao.getInstance().getAllPerson("Vorname");
 
 
-
-
-
-
             BorderPane borderPane = new BorderPane();
 
             BorderPane contentBorderPane = new BorderPane();
@@ -77,6 +72,17 @@ public class makeUI extends Application {
             HBox nameLabelBox = new HBox(nameLabel);
             Button stampButton = new Button("Stempeln");
             Label stampLabel = new Label("Keine Stempel.");
+            BorderPane loadingPane = new BorderPane();
+            BorderPane loadFailPane = new BorderPane();
+
+            loadFailPane.setCenter(new Label("Ein Fehler ist Aufgetreten."));
+
+            Image loading = new Image(Objects.requireNonNull(getClass().getResourceAsStream("load.gif")));
+
+            ImageView imageView = new ImageView(loading);
+            imageView.setFitWidth(100);
+            imageView.setFitHeight(100);
+            loadingPane.setCenter(imageView);
 
             nameLabel.getStyleClass().add("nameLabel");
             stampButton.getStyleClass().add("stampButton");
@@ -98,10 +104,11 @@ public class makeUI extends Application {
 
 
             for (Person person : personen) {
+
                 Button personButton;
-                if (person.getFullName().length()>18) {
+                if (person.getFullName().length() > 18) {
                     String name = person.getFullName();
-                    name=name.replace(" ","\n");
+                    name = name.replace(" ", "\n");
                     personButton = new Button(name);
                 } else {
                     personButton = new Button(person.getFullName());
@@ -110,52 +117,101 @@ public class makeUI extends Application {
                 leftVbox.getChildren().add(personButton);
 
                 personButton.setOnAction(e -> {
-                    if (person.getFullName().length()>28) {
-                        String name = person.getFullName();
-                        name=name.replace(" ","\n");
-                        nameLabel.setText(name);
-                    } else {
-                        nameLabel.setText(person.getFullName());
-                    }
 
-                    try {
-                        if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null){
-                            stampLabel.setText("Keine Stempel.");
-                        } else {
-                            Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person).getLast();
-                            String oldDateString = lastTimestamp.getDate().toString();
-                            SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                            Date date = oldDateFormat.parse(oldDateString);
+                    root.setCenter(loadingPane);
 
-                            SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                            String newDateString = newDateFormat.format(date);
+                    Task<Void> datenLaden = new Task<Void>() {
 
-                            int[] lastTimeArray =  Calculator.getInstance().sekToTime(lastTimestamp.getSek());
-                            String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+                        @Override
+                        protected Void call() throws Exception {
 
-                            stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+                            if (person.getFullName().length() > 28) {
+                                String name = person.getFullName();
+                                name = name.replace(" ", "\n");
+                                nameLabel.setText(name);
+                            } else {
+                                nameLabel.setText(person.getFullName());
+                            }
+
+                            try {
+                                if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
+                                    stampLabel.setText("Keine Stempel.");
+                                } else {
+                                    Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person).getLast();
+                                    String oldDateString = lastTimestamp.getDate().toString();
+                                    SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                    Date date = oldDateFormat.parse(oldDateString);
+
+                                    SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                    String newDateString = newDateFormat.format(date);
+
+                                    int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
+                                    String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+
+                                    stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+                                }
+                            } catch (SQLException | ParseException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+                            stampButton.setOnAction(r -> {
+
+                                Timestamp timestamp = new Timestamp(0, person, LocalDate.now(), LocalTime.now().toSecondOfDay());
+
+                                try {
+                                    TimestampJDBCDao.getInstance().insertTimestamp(timestamp);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+
+
+                                String getName = nameLabel.getText();
+                                getName = getName.replace("\n", " ");
+                                String[] split = getName.split(" ");
+                                Person person1;
+                                try {
+                                    person1 = PersonJDBCDao.getInstance().getPersonByName(split[0], split[1]);
+                                } catch (SQLException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+
+                                try {
+                                    if (TimestampJDBCDao.getInstance().getTimestampByPerson(person1) == null) {
+                                        stampLabel.setText("Keine Stempel.");
+                                    } else {
+                                        Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person1).getLast();
+                                        String oldDateString = lastTimestamp.getDate().toString();
+                                        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                        Date date = oldDateFormat.parse(oldDateString);
+
+                                        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                        String newDateString = newDateFormat.format(date);
+
+                                        int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
+                                        String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+
+                                        stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+                                    }
+                                } catch (SQLException | ParseException ex) {
+                                    throw new RuntimeException(ex);
+                                }
+
+                            });
+                            return null;
                         }
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    } catch (ParseException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+                    };
 
-                stampButton.setOnAction(e -> {
-                    try {
-                        TimestampJDBCDao.getInstance().insertTimestamp(person, LocalDate.now(), LocalTime.now().toSecondOfDay());
-                    } catch (SQLException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                });
+                    datenLaden.setOnSucceeded(event -> {
+                        root.setCenter(borderPane);
+                    });
 
-                root.setCenter(borderPane);
+                    datenLaden.setOnFailed(event -> {
+                        root.setCenter(loadFailPane);
+                    });
+
+                    new Thread(datenLaden).start();
+                });
             }
-
-
-
-
 
 
             leftScroll.setContent(leftVbox);

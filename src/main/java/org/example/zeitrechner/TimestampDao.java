@@ -11,9 +11,15 @@ import java.util.List;
 public interface TimestampDao {
     public void insertTimestamp(Person person, LocalDate date, int sekunden) throws SQLException;
 
+    void insertTimestamp(Timestamp timestamp) throws SQLException;
+
     public void removeTimestampWithId(int id) throws SQLException;
 
     public Timestamp getTimestampById(int id) throws SQLException;
+
+    Timestamp getTimestampById() throws SQLException;
+
+    Timestamp getTimestampByTimestamp(Timestamp timestamp) throws SQLException;
 
     public List<Timestamp> getTimestampByPerson(Person person) throws SQLException;
 
