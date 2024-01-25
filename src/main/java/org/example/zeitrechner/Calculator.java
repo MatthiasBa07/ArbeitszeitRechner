@@ -107,4 +107,9 @@ public class Calculator {
         sekTime -= 60 * minTime;
         return new int[]{hoursTime, minTime, sekTime};
     }
+    public int calculateOverTime(int overTime, int worktimeOfDay) {
+        int normalWorktime = 504;
+        worktimeOfDay += overTime;
+        return worktimeOfDay - normalWorktime;
+    }
 }
