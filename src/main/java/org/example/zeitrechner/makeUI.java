@@ -1,6 +1,7 @@
 package org.example.zeitrechner;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -91,6 +92,15 @@ public class makeUI extends Application {
                 VBox nachnameBox = new VBox(nachnameLabel, nachnameInput);
 
                 Button confirmButton = new Button("Erstellen");
+
+                confirmButton.disableProperty().bind(
+                        Bindings.createBooleanBinding(() ->
+                                        vornameInput.getText().trim().isEmpty() || nachnameInput.getText().trim().isEmpty(),
+                                vornameInput.textProperty(),
+                                nachnameInput.textProperty()
+                        )
+                );
+
                 confirmButton.setOnAction(c -> {
                     try {
                         String vorname;
@@ -123,7 +133,7 @@ public class makeUI extends Application {
                 buttonBox.setMaxHeight(50);
                 buttonBox.setPrefWidth(250);
                 buttonBox.setMaxWidth(250);
-                buttonBox.setSpacing(100);
+                buttonBox.setSpacing(115);
 
                 VBox mainBox = new VBox();
                 mainBox.setSpacing(30);
@@ -136,6 +146,7 @@ public class makeUI extends Application {
                 Scene scene = new Scene(layout, 300, 300);
                 neuPersonWindow.getIcons().add(new Image(Objects.requireNonNull(makeUI.class.getResourceAsStream("uhr.jpg"))));
                 neuPersonWindow.setScene(scene);
+                neuPersonWindow.setResizable(false);
 
                 neuPersonWindow.showAndWait();
             });
@@ -322,51 +333,145 @@ public class makeUI extends Application {
                     BorderPane layout = new BorderPane();
                     layout.setPadding(new Insets(25, 25, 0, 25));
 
-                    TextFormatter<String> vornameFormatter = new TextFormatter<>(new DefaultStringConverter(), "", change ->
-                            change.getControlNewText().length() <= 15 ? change : null);
-                    TextFormatter<String> nachnameFormatter = new TextFormatter<>(new DefaultStringConverter(), "", change ->
-                            change.getControlNewText().length() <= 15 ? change : null);
+                    DatePicker datePicker = new DatePicker();
+                    datePicker.setPromptText("Datum");
+                    datePicker.setPrefWidth(250);
+                    datePicker.getEditor().setDisable(true);
+                    datePicker.getEditor().setOpacity(1);
 
+                    Label dateLabel = new Label("Datum");
 
-                    TextField vornameInput = new TextField();
-                    vornameInput.setPromptText("Vorname eingeben");
-                    vornameInput.setTextFormatter(vornameFormatter);
+                    VBox dateBox = new VBox(dateLabel, datePicker);
 
-                    Label vornameLabel = new Label("Vorname");
+                    TextField timePickerH = new TextField();
+                    TextField timePickerM = new TextField();
+                    TextField timePickerS = new TextField();
 
-                    VBox vornameBox = new VBox(vornameLabel, vornameInput);
+                    timePickerH.setPromptText("hh");
+                    timePickerM.setPromptText("mm");
+                    timePickerS.setPromptText("ss");
 
-                    TextField nachnameInput = new TextField();
-                    nachnameInput.setPromptText("Nachname eingeben");
-                    nachnameInput.setTextFormatter(nachnameFormatter);
+                    timePickerH.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("\\d*")) {
+                            timePickerH.setText(newValue.replaceAll("[^\\d]", ""));
+                        }
+                        if (timePickerH.getText().length() > 2) {
+                            timePickerH.setText(timePickerH.getText().substring(0, 2));
+                        }
+                        if (!timePickerH.getText().isEmpty()) {
+                            int eingabe = Integer.parseInt(timePickerH.getText());
+                            if (eingabe > 23) {
+                                timePickerH.setText(oldValue);
+                            }
+                        }
+                    });
 
-                    Label nachnameLabel = new Label("Nachname");
+                    timePickerM.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("\\d*")) {
+                            timePickerM.setText(newValue.replaceAll("[^\\d]", ""));
+                        }
+                        if (timePickerM.getText().length() > 2) {
+                            timePickerM.setText(timePickerM.getText().substring(0, 2));
+                        }
+                        if (!timePickerM.getText().isEmpty()) {
+                            int eingabe = Integer.parseInt(timePickerM.getText());
+                            if (eingabe > 59) {
+                                timePickerM.setText(oldValue);
+                            }
+                        }
+                    });
 
-                    VBox nachnameBox = new VBox(nachnameLabel, nachnameInput);
+                    timePickerS.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("\\d*")) {
+                            timePickerS.setText(newValue.replaceAll("[^\\d]", ""));
+                        }
+                        if (timePickerS.getText().length() > 2) {
+                            timePickerS.setText(timePickerS.getText().substring(0, 2));
+                        }
+                        if (!timePickerS.getText().isEmpty()) {
+                            int eingabe = Integer.parseInt(timePickerS.getText());
+                            if (eingabe > 59) {
+                                timePickerS.setText(oldValue);
+                            }
+                        }
+                    });
 
-                    Button confirmButton = new Button("Erstellen");
+                    timePickerM.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("\\d*")) {
+                            timePickerM.setText(newValue.replaceAll("[^\\d]", ""));
+                        }
+                        if (timePickerM.getText().length() > 2) {
+                            timePickerM.setText(timePickerM.getText().substring(0, 2));
+                        }
+                    });
+
+                    timePickerS.textProperty().addListener((observable, oldValue, newValue) -> {
+                        if (!newValue.matches("\\d*")) {
+                            timePickerS.setText(newValue.replaceAll("[^\\d]", ""));
+                        }
+                        if (timePickerS.getText().length() > 2) {
+                            timePickerS.setText(timePickerS.getText().substring(0, 2));
+                        }
+                    });
+
+                    Label timeLabel = new Label("Zeit");
+                    Label spaceLabel = new Label(":");
+                    Label spaceLabel1 = new Label(":");
+
+                    HBox hTimeBox = new HBox(timePickerH,spaceLabel,timePickerM,spaceLabel1,timePickerS);
+                    hTimeBox.setSpacing(5);
+
+                    VBox timeBox = new VBox(timeLabel, hTimeBox);
+
+                    Button confirmButton = new Button("Anwenden");
+
+                    confirmButton.disableProperty().bind(
+                            Bindings.createBooleanBinding(() ->
+                                            timePickerH.getText().trim().isEmpty() || timePickerM.getText().trim().isEmpty() || datePicker.getValue() == null,
+                                    timePickerH.textProperty(),
+                                    timePickerM.textProperty(),
+                                    datePicker.valueProperty()
+                            )
+                    );
+
                     confirmButton.setOnAction(c -> {
+                            int sek;
+
+                            if (timePickerS.getText().trim().isEmpty()){
+                                sek = Calculator.getInstance().timeToSek(new int[]{Integer.parseInt(timePickerH.getText()),Integer.parseInt(timePickerM.getText()),0});
+                            } else {
+                                sek = Calculator.getInstance().timeToSek(new int[]{Integer.parseInt(timePickerH.getText()),Integer.parseInt(timePickerM.getText()),Integer.parseInt(timePickerS.getText())});
+                            }
+
                         try {
-                            String vorname;
-                            if (vornameInput.getLength() > 15) {
-                                vorname = vornameInput.getText(0, 15);
-                            } else {
-                                vorname = vornameInput.getText();
+                            TimestampJDBCDao.getInstance().insertTimestamp(person,datePicker.getValue(),sek);
+
+                            try {
+                                if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
+                                    stampLabel.setText("Keine Stempel.");
+                                } else {
+                                    Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person).getLast();
+                                    String oldDateString = lastTimestamp.getDate().toString();
+                                    SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                    Date date = oldDateFormat.parse(oldDateString);
+
+                                    SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                    String newDateString = newDateFormat.format(date);
+
+                                    int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
+                                    String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+
+                                    stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+                                }
+                            } catch (SQLException | ParseException ex) {
+                                throw new RuntimeException(ex);
                             }
 
-                            String nachname;
-                            if (nachnameInput.getLength() > 15) {
-                                nachname = nachnameInput.getText(0, 15);
-                            } else {
-                                nachname = nachnameInput.getText();
-                            }
-
-                            PersonJDBCDao.getInstance().insertPerson(vorname, nachname);
-                            manTimeWindow.close();
-                            loadPersons();
                         } catch (SQLException ex) {
                             throw new RuntimeException(ex);
                         }
+
+                        manTimeWindow.close();
                     });
                     Button cancelButton = new Button("Abbrechen");
                     cancelButton.setOnAction(c -> {
@@ -377,12 +482,12 @@ public class makeUI extends Application {
                     buttonBox.setMaxHeight(50);
                     buttonBox.setPrefWidth(250);
                     buttonBox.setMaxWidth(250);
-                    buttonBox.setSpacing(100);
+                    buttonBox.setSpacing(103);
 
                     VBox mainBox = new VBox();
                     mainBox.setSpacing(30);
                     mainBox.getStyleClass().add("mainBox");
-                    mainBox.getChildren().addAll(vornameBox, nachnameBox);
+                    mainBox.getChildren().addAll(dateBox, timeBox);
 
                     layout.setCenter(mainBox);
                     layout.setBottom(buttonBox);
@@ -390,6 +495,7 @@ public class makeUI extends Application {
                     Scene scene = new Scene(layout, 300, 300);
                     manTimeWindow.getIcons().add(new Image(Objects.requireNonNull(makeUI.class.getResourceAsStream("uhr.jpg"))));
                     manTimeWindow.setScene(scene);
+                    manTimeWindow.setResizable(false);
 
                     manTimeWindow.showAndWait();
                 });
