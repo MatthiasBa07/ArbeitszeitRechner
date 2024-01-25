@@ -1,8 +1,10 @@
 package org.example.zeitrechner;
 
 import java.sql.SQLException;
+import java.sql.Time;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Timer;
 
 public class Calculator {
@@ -112,9 +114,25 @@ public class Calculator {
     Rechnet die Überstunden oder Minusstunden aus.
     @autor Simon
     */
-    public int calculateOverTime(int overTime, int worktimeOfDay) {
-        int normalWorktime = 504;
+
+    public String calculateOverTime(int overTime, Timestamp firstStamp, Timestamp lastStamp) {
+        int normalWorktime = 252;
+        int worktimeOfDay = this.calculateTime(firstStamp, lastStamp);
         worktimeOfDay += overTime;
-        return worktimeOfDay - normalWorktime;
+        int returnTime = worktimeOfDay - normalWorktime;
+        String formattedString = Arrays.toString(this.sekToTime(returnTime)).toString()
+                .replace(",", ":")  //remove the commas
+                .replace("[", "")  //remove the right bracket
+                .replace("]", "")  //remove the left bracket
+                .trim();           //remove trailing spaces from partially initialized arrays
+        if (returnTime > 0) {
+            return "+" + formattedString;
+        }
+        else if (returnTime == 0) {
+            return Arrays.toString(this.sekToTime(returnTime));
+        }
+        else {
+            return "-" + formattedString;
+        }
     }
 }
