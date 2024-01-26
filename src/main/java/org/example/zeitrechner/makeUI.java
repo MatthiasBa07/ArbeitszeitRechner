@@ -199,7 +199,7 @@ public class makeUI extends Application {
 
             contentBorderPane.setAlignment(overtimeLabel, Pos.TOP_LEFT);
 
-            overtimeLabel.setPadding(new Insets(0,0,0,20));
+            overtimeLabel.setPadding(new Insets(0, 0, 0, 20));
 
             nameLabelBox.setAlignment(Pos.CENTER);
             borderPane.setTop(nameLabelBox);
@@ -459,9 +459,22 @@ public class makeUI extends Application {
                                 delButton.setDisable(true);
                             }
 
-                            int overtime = Calculator.getInstance().calculateOverTime(person);
-                            int[] overtimeList = Calculator.getInstance().sekToTime(overtime);
-                            overtimeLabel.setText(overtimeList[0] + ":" + overtimeList[1] + ":" + overtimeList[2]);
+                            if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) != null && TimestampJDBCDao.getInstance().getTimestampByPerson(person).size() % 2 == 0) {
+                                int overtime = Calculator.getInstance().calculateOverTime(person);
+                                if (overtime > 0) {
+                                    int[] overtimeList = Calculator.getInstance().sekToTime(overtime);
+                                    overtimeLabel.setText("Aktueller Stand:\n+" + Calculator.getInstance().addZero(overtimeList[0]) + ":" + Calculator.getInstance().addZero(overtimeList[1]) + ":" + Calculator.getInstance().addZero(overtimeList[2]));
+                                } else {
+                                    overtime = overtime * -1;
+                                    int[] overtimeList = Calculator.getInstance().sekToTime(overtime);
+                                    overtimeLabel.setText("Aktueller Stand:\n-" + Calculator.getInstance().addZero(overtimeList[0]) + ":" + Calculator.getInstance().addZero(overtimeList[1]) + ":" + Calculator.getInstance().addZero(overtimeList[2]));
+                                }
+
+                            } else if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
+                                overtimeLabel.setText("Aktueller Stand:\nKeine Stempel");
+                            } else {
+                                overtimeLabel.setText("Aktueller Stand:\nFehler in den Stempeln");
+                            }
 
                             return null;
                         }
@@ -590,22 +603,22 @@ public class makeUI extends Application {
                             try {
                                 TimestampJDBCDao.getInstance().insertTimestamp(person, datePicker.getValue(), sek);
 
-                                    if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
-                                        stampLabel.setText("Keine Stempel.");
-                                    } else {
-                                        Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person).getLast();
-                                        String oldDateString = lastTimestamp.getDate().toString();
-                                        SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                                        Date date = oldDateFormat.parse(oldDateString);
+                                if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
+                                    stampLabel.setText("Keine Stempel.");
+                                } else {
+                                    Timestamp lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person).getLast();
+                                    String oldDateString = lastTimestamp.getDate().toString();
+                                    SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                    Date date = oldDateFormat.parse(oldDateString);
 
-                                        SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
-                                        String newDateString = newDateFormat.format(date);
+                                    SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                    String newDateString = newDateFormat.format(date);
 
-                                        int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
-                                        String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+                                    int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
+                                    String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
 
-                                        stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
-                                    }
+                                    stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+                                }
 
                             } catch (SQLException | ParseException ex) {
                                 throw new RuntimeException(ex);
@@ -702,7 +715,7 @@ public class makeUI extends Application {
 
                     datenLaden.setOnFailed(event -> {
                         Throwable exception = event.getSource().getException();
-                        System.out.println("Error occurred: " + exception.getMessage());
+                        exception.printStackTrace();
                         root.setCenter(loadFailPane);
                     });
 

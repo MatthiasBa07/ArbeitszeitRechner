@@ -73,8 +73,13 @@ public class PersonJDBCDao implements PersonDao {
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE ID_Person = " + id + " LIMIT 1;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
-        return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
+        if (resultSet.next()) {
+            do {
+                return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
+            } while (resultSet.next());
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -89,8 +94,13 @@ public class PersonJDBCDao implements PersonDao {
         String sql = "SELECT ID_Person,Vorname, Nachname FROM PERSON WHERE Vorname = '" + vorname + "' AND Nachname = '" + nachname + "' LIMIT 1;";
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
-        return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
+        if (resultSet.next()) {
+            do {
+                return new Person(resultSet.getInt("ID_Person"),resultSet.getString("Vorname"),resultSet.getString("Nachname"));
+            } while (resultSet.next());
+        } else {
+            return null;
+        }
     }
 
     /**

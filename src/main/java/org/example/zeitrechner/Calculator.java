@@ -15,7 +15,9 @@ public class Calculator {
 
     public String addZero(int zeit) {
         String result;
-        if (zeit < 10) result = "0" + zeit;
+        if (zeit < 10 && zeit >= 0) result = "0" + zeit;
+        else if (zeit > 10) result = Integer.toString(zeit);
+        else if (zeit < 0 && zeit > -10) result = Integer.toString(zeit);
         else result = Integer.toString(zeit);
         return result;
     }
@@ -134,7 +136,7 @@ public class Calculator {
 
             int worktime = 30240 * dates.size();
             int worked = Calculator.getInstance().calculateEntireTime(timestamps);
-            return worktime-worked;
+            return worked-worktime;
         }
     }
 }

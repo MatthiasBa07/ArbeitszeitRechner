@@ -87,8 +87,13 @@ public class TimestampJDBCDao implements TimestampDao{
         }
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(sql);
-        resultSet.next();
-        return new Timestamp(resultSet.getInt("ID_Timestamp"),personJDBCDao.getPersonById(resultSet.getInt("Person_ID")), resultSet.getDate("Date").toLocalDate(), resultSet.getInt("Sekunden"));
+        if (resultSet.next()) {
+            do {
+                return new Timestamp(resultSet.getInt("ID_Timestamp"),personJDBCDao.getPersonById(resultSet.getInt("Person_ID")), resultSet.getDate("Date").toLocalDate(), resultSet.getInt("Sekunden"));
+            } while (resultSet.next());
+        } else {
+            return null;
+        }
     }
 
     /**
