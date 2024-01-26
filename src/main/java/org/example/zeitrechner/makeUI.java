@@ -301,7 +301,7 @@ public class makeUI extends Application {
                                     int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
                                     String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
 
-                                    String lableShowOvertime = new String(Calculator.getInstance().calculateOverTime(90, lastTimestamp, TimestampJDBCDao.getInstance().getTimestampByPerson(person).get(TimestampJDBCDao.getInstance().getTimestampByPerson(person).size() - 2)));
+                                    String lableShowOvertime = new String(Calculator.getInstance().calculateOverTime(0, lastTimestamp, TimestampJDBCDao.getInstance().getTimestampByPerson(person).get(TimestampJDBCDao.getInstance().getTimestampByPerson(person).size() - 2)));
 
 
                                     stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime + "\n" + (lableShowOvertime));
