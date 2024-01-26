@@ -3,9 +3,7 @@ package org.example.zeitrechner;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Timer;
+import java.util.*;
 
 public class Calculator {
 
@@ -48,14 +46,14 @@ public class Calculator {
      */
     public int calculateTime(Timestamp einStamp, Timestamp ausStamp) {
         if (einStamp.getPerson().equals(ausStamp.getPerson())) {
-        int sekStampIn = einStamp.getSek();
-        int sekStampOut = ausStamp.getSek();
+            int sekStampIn = einStamp.getSek();
+            int sekStampOut = ausStamp.getSek();
 
-        if (sekStampIn > sekStampOut) {
-            sekStampOut += 86400;
-        }
-        return sekStampOut - sekStampIn;}
-        else return 0;
+            if (sekStampIn > sekStampOut) {
+                sekStampOut += 86400;
+            }
+            return sekStampOut - sekStampIn;
+        } else return 0;
     }
 
     /*
@@ -65,10 +63,10 @@ public class Calculator {
     @autor Simon
      */
     public int calculateEntireTime(ArrayList<Timestamp> array) {
-        if (!array.isEmpty() && array.size()%2==0) {
+        if (!array.isEmpty() && array.size() % 2 == 0) {
             boolean gud = true;
-            for (int i = 0; i < array.size()-1; i++) {
-                if (!(array.getFirst().getPerson().equals(array.get(i+1).getPerson()))) {
+            for (int i = 0; i < array.size() - 1; i++) {
+                if (!(array.getFirst().getPerson().equals(array.get(i + 1).getPerson()))) {
                     gud = false;
                 }
             }
@@ -76,9 +74,9 @@ public class Calculator {
                 int eins = 0;
                 int zwei = 0;
                 int insg = 0;
-                for (int i = 0; i<=array.size()/2; i=i+2) {
+                for (int i = 0; i <= array.size() / 2; i = i + 2) {
                     eins = array.get(i).getSek();
-                    zwei = array.get(i+1).getSek();
+                    zwei = array.get(i + 1).getSek();
                     if (eins > zwei) {
                         zwei += 86400;
                     }
@@ -95,7 +93,7 @@ public class Calculator {
         }
         return sekStampOut - sekStampIn;*/
     }
-    
+
     /*
     Rechnet die Anzahl Sekunden in leserliche Zeit um.
     @autor Simon
@@ -115,24 +113,28 @@ public class Calculator {
     @autor Simon
     */
 
-    public String calculateOverTime(int overTime, Timestamp firstStamp, Timestamp lastStamp) {
-        int normalWorktime = 252;
-        int worktimeOfDay = this.calculateTime(firstStamp, lastStamp);
-        worktimeOfDay += overTime;
-        int returnTime = worktimeOfDay - normalWorktime;
-        String formattedString = Arrays.toString(this.sekToTime(returnTime)).toString()
-                .replace(",", ":")  //remove the commas
-                .replace("[", "")  //remove the right bracket
-                .replace("]", "")  //remove the left bracket
-                .trim();           //remove trailing spaces from partially initialized arrays
-        if (returnTime > 0) {
-            return "+" + formattedString;
+    public int calculateOverTime(Person person) {
+        ArrayList<Timestamp>  timestamps;
+        try {
+            timestamps = TimestampJDBCDao.getInstance().getTimestampByPerson(person);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        else if (returnTime == 0) {
-            return Arrays.toString(this.sekToTime(returnTime));
-        }
-        else {
-            return "-" + formattedString;
+        if (timestamps.size() % 2 != 0) {
+            return -999999;
+        }else {
+            ArrayList<LocalDate> dates = new ArrayList<>();
+
+            for (Timestamp timestamp : timestamps) {
+                dates.add(timestamp.getDate());
+            }
+            Set<LocalDate> newDate = new LinkedHashSet<>(dates);
+            dates.clear();
+            dates.addAll(newDate);
+
+            int worktime = 30240 * dates.size();
+            int worked = Calculator.getInstance().calculateEntireTime(timestamps);
+            return worktime-worked;
         }
     }
 }

@@ -48,6 +48,7 @@ public class makeUI extends Application {
     Button delButton = new Button("Stempel löschen...");
     VBox stampsBox = new VBox(dayChoose, dayScroll, delButton);
     VBox daysBox = new VBox();
+    Label overtimeLabel = new Label("aktueller Stand:\n0");
 
     @Override
     public void start(Stage primaryStage) {
@@ -189,11 +190,16 @@ public class makeUI extends Application {
 
             contentBorderPane.setTop(stampBox);
             contentBorderPane.setLeft(stampsBox);
+            contentBorderPane.setCenter(overtimeLabel);
             borderPane.setCenter(contentBorderPane);
             stampBox.getChildren().add(stampPane);
             stampPane.setLeft(stampButtonBox);
             stampPane.setCenter(lastStampBox);
             stampBox.getChildren().add(manTimeButton);
+
+            contentBorderPane.setAlignment(overtimeLabel, Pos.TOP_LEFT);
+
+            overtimeLabel.setPadding(new Insets(0,0,0,20));
 
             nameLabelBox.setAlignment(Pos.CENTER);
             borderPane.setTop(nameLabelBox);
@@ -347,41 +353,22 @@ public class makeUI extends Application {
                                 }
 
                                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-                                if (lastTimestamp.getDate().equals(LocalDate.parse(dayChoose.getValue(),formatter))){
+                                daysBox.getChildren().clear();
+                                if (!dayChoose.getValue().equals("Keine Stempel")) {
                                     daysBox.getChildren().clear();
-                                    ArrayList<Timestamp> timestamps;
-                                    try {
-                                        timestamps = TimestampJDBCDao.getInstance().getTimestampByPerson(person);
-                                    } catch (SQLException ex) {
-                                        throw new RuntimeException(ex);
-                                    }
-                                    ArrayList<LocalDate> dateList = new ArrayList<>();
-                                    for (Timestamp timestamp2 : timestamps) {
-                                        dateList.add(timestamp2.getDate());
-                                    }
-                                    dateList.sort(Collections.reverseOrder());
-                                    Set<LocalDate> dateSet = new LinkedHashSet<>(dateList);
-                                    dateList.clear();
-                                    dateList.addAll(dateSet);
-                                    for (LocalDate date : dateList) {
-                                        dayChoose.getItems().add(date.format(formatter));
-                                    }
-                                    dayChoose.setValue(dayChoose.getItems().getFirst());
+                                    dayChoose.setValue(lastTimestamp.getDate().format(formatter));
 
-                                    LocalDate dayChooseDate = LocalDate.parse(dayChoose.getValue(), formatter);
-                                    for (Timestamp timestamp3 : timestamps) {
-                                        if (timestamp3.getDate().equals(dayChooseDate)) {
-                                            int[] time = Calculator.getInstance().sekToTime(timestamp3.getSek());
-                                            ArrayList<String> stringTime = new ArrayList<>();
-                                            for (int i = 0; i < time.length; i++) {
-                                                stringTime.add(Calculator.getInstance().addZero(time[i]));
-                                            }
-                                            Label label = new Label(stringTime.get(0) + ":" + stringTime.get(1) + ":" + stringTime.get(2));
-                                            label.setPrefWidth(150);
-                                            label.setStyle("-fx-alignment: center;");
-                                            daysBox.getChildren().add(label);
-                                        }
-                                    }
+                                } else if (dayChoose.getValue().equals("Keine Stempel")) {
+                                    dayChoose.setDisable(false);
+                                    dayScroll.setDisable(false);
+                                    delButton.setDisable(false);
+                                    daysBox.getChildren().clear();
+                                    dayChoose.getItems().clear();
+
+                                    String date = lastTimestamp.getDate().format(formatter);
+                                    dayChoose.setValue(date);
+                                    dayChoose.getItems().add(date);
+                                    dayChoose.setValue(date);
                                 }
 
                             });
@@ -415,6 +402,12 @@ public class makeUI extends Application {
 
                                 LocalDate dayChooseDate = LocalDate.parse(dayChoose.getValue(), formatter);
                                 daysBox.getChildren().clear();
+                                timestamps.sort(new Comparator<Timestamp>() {
+                                    @Override
+                                    public int compare(Timestamp t1, Timestamp t2) {
+                                        return Integer.compare(t2.getSek(), t1.getSek());
+                                    }
+                                });
                                 for (Timestamp timestamp : timestamps) {
                                     if (timestamp.getDate().equals(dayChooseDate)) {
                                         int[] time = Calculator.getInstance().sekToTime(timestamp.getSek());
@@ -423,7 +416,7 @@ public class makeUI extends Application {
                                             stringTime.add(Calculator.getInstance().addZero(time[i]));
                                         }
                                         Label label = new Label(stringTime.get(0) + ":" + stringTime.get(1) + ":" + stringTime.get(2));
-                                        label.setPrefWidth(150);
+                                        label.setPrefWidth(100);
                                         label.setStyle("-fx-alignment: center;");
                                         daysBox.getChildren().add(label);
                                     }
@@ -449,7 +442,7 @@ public class makeUI extends Application {
                                                     stringTime.add(Calculator.getInstance().addZero(time[i]));
                                                 }
                                                 Label label = new Label(stringTime.get(0) + ":" + stringTime.get(1) + ":" + stringTime.get(2));
-                                                label.setPrefWidth(150);
+                                                label.setPrefWidth(100);
                                                 label.setStyle("-fx-alignment: center;");
                                                 daysBox.getChildren().add(label);
                                             }
@@ -466,6 +459,9 @@ public class makeUI extends Application {
                                 delButton.setDisable(true);
                             }
 
+                            int overtime = Calculator.getInstance().calculateOverTime(person);
+                            int[] overtimeList = Calculator.getInstance().sekToTime(overtime);
+                            overtimeLabel.setText(overtimeList[0] + ":" + overtimeList[1] + ":" + overtimeList[2]);
 
                             return null;
                         }
@@ -594,7 +590,6 @@ public class makeUI extends Application {
                             try {
                                 TimestampJDBCDao.getInstance().insertTimestamp(person, datePicker.getValue(), sek);
 
-                                try {
                                     if (TimestampJDBCDao.getInstance().getTimestampByPerson(person) == null) {
                                         stampLabel.setText("Keine Stempel.");
                                     } else {
@@ -611,15 +606,66 @@ public class makeUI extends Application {
 
                                         stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
                                     }
-                                } catch (SQLException | ParseException ex) {
-                                    throw new RuntimeException(ex);
-                                }
 
-                            } catch (SQLException ex) {
+                            } catch (SQLException | ParseException ex) {
                                 throw new RuntimeException(ex);
                             }
 
                             manTimeWindow.close();
+
+
+                            String getName = nameLabel.getText();
+                            getName = getName.replace("\n", " ");
+                            String[] split = getName.split(" ");
+                            Person person1;
+                            try {
+                                person1 = PersonJDBCDao.getInstance().getPersonByName(split[0], split[1]);
+                            } catch (SQLException ex) {
+                                throw new RuntimeException(ex);
+                            }
+                            Timestamp lastTimestamp = null;
+                            try {
+                                if (TimestampJDBCDao.getInstance().getTimestampByPerson(person1) == null) {
+                                    stampLabel.setText("Keine Stempel.");
+                                } else {
+                                    lastTimestamp = TimestampJDBCDao.getInstance().getTimestampByPerson(person1).getLast();
+                                    String oldDateString = lastTimestamp.getDate().toString();
+                                    SimpleDateFormat oldDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                                    Date date = oldDateFormat.parse(oldDateString);
+
+                                    SimpleDateFormat newDateFormat = new SimpleDateFormat("dd.MM.yyyy");
+                                    String newDateString = newDateFormat.format(date);
+
+                                    int[] lastTimeArray = Calculator.getInstance().sekToTime(lastTimestamp.getSek());
+                                    String lastTime = Calculator.getInstance().addZero(lastTimeArray[0]) + ":" + Calculator.getInstance().addZero(lastTimeArray[1]) + ":" + Calculator.getInstance().addZero(lastTimeArray[2]);
+
+                                    stampLabel.setText("Letzter Stempel:\n" + newDateString + "\n" + lastTime);
+
+
+                                }
+                            } catch (SQLException | ParseException ex) {
+                                throw new RuntimeException(ex);
+                            }
+
+
+                            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                            daysBox.getChildren().clear();
+                            if (!dayChoose.getValue().equals("Keine Stempel")) {
+                                daysBox.getChildren().clear();
+                                dayChoose.setValue(lastTimestamp.getDate().format(formatter));
+
+                            } else if (dayChoose.getValue().equals("Keine Stempel")) {
+                                dayChoose.setDisable(false);
+                                dayScroll.setDisable(false);
+                                delButton.setDisable(false);
+                                daysBox.getChildren().clear();
+                                dayChoose.getItems().clear();
+
+                                String date = lastTimestamp.getDate().format(formatter);
+                                dayChoose.setValue(date);
+                                dayChoose.getItems().add(date);
+                                dayChoose.setValue(date);
+                            }
                         });
                         Button cancelButton = new Button("Abbrechen");
                         cancelButton.setOnAction(c -> {
@@ -636,6 +682,7 @@ public class makeUI extends Application {
                         mainBox.setSpacing(30);
                         mainBox.getStyleClass().add("mainBox");
                         mainBox.getChildren().addAll(dateBox, timeBox);
+
 
                         layout.setCenter(mainBox);
                         layout.setBottom(buttonBox);
